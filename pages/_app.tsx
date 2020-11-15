@@ -1,7 +1,6 @@
 import Head from "next/head";
 import App from "next/app";
 import React from "react";
-import Sentry from "../lib/sentry-browser";
 
 export default class StaticFunApp extends App {
   state = {
@@ -10,11 +9,6 @@ export default class StaticFunApp extends App {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.setState({ error });
-    Sentry.withScope(scope => {
-      scope.setExtra("componentStack", errorInfo.componentStack);
-      Sentry.captureException(error);
-    });
-
     super.componentDidCatch(error, errorInfo);
   }
 

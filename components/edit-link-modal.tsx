@@ -1,17 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import Button from "./button";
-
-export default function EditLinkModal({
-  dialogOpen,
-  setDialogOpen,
-  email,
-  setEmail,
-  editLink
-}) {
-  const [sendingState, setSendingState] = useState();
-  const [errorMessage, setErrorMessage] = useState();
-
+export default function EditLinkModal({ dialogOpen, setDialogOpen, editLink }) {
   const dialogRef = useRef<HTMLDialogElement>();
   const editLinkRef = useRef<HTMLInputElement>();
 
@@ -27,68 +16,6 @@ export default function EditLinkModal({
     }
   }, [dialogOpen]);
 
-  async function sendEmail() {
-    console.log("sending email to: ", email);
-    if (email) {
-      setSendingState("SENDING");
-      setErrorMessage(null);
-      let res = await fetch("/api/send-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, editLink })
-      });
-      if (res.ok) {
-        setSendingState("SUCCESS");
-        localStorage.setItem("email", email);
-      }
-      if (!res.ok) {
-        setSendingState("ERROR");
-        let { message } = await res.json();
-        setErrorMessage(message);
-      }
-    }
-  }
-
-  function emailInputHandler(e) {
-    setEmail(e.target.value);
-  }
-
-  function renderEmailButton() {
-    switch (sendingState) {
-      case "SENDING":
-        return (
-          <Button bg="#CDAE8F" fontSize={44} disabled isLoading>
-            ⏳
-          </Button>
-        );
-      case "ERROR":
-        return (
-          <Button bg="#000000" onClick={sendEmail} fontSize={44}>
-            ❌
-          </Button>
-        );
-      case "SUCCESS":
-        return (
-          <Button bg="#0085FF" disabled fontSize={44}>
-            🎉
-          </Button>
-        );
-      default:
-        return (
-          <Button
-            bg="#9B51E0"
-            disabled={!Boolean(email)}
-            fontSize={44}
-            onClick={sendEmail}
-          >
-            💌
-          </Button>
-        );
-    }
-  }
-
   return (
     <dialog ref={dialogRef}>
       <div className="content-container">
@@ -97,36 +24,15 @@ export default function EditLinkModal({
           <input ref={editLinkRef} type="text" value={editLink} readOnly />
           <p>
             Please don't share the edit link with anyone you don't want editing
-            your page!
+            your app!
           </p>
           <hr />
         </div>
-        <div className="email">
-          <h2>Enter your email to save the edit link (recommended)</h2>
-        </div>
-        <div className="email-input-container">
-          <input
-            type="text"
-            placeholder="joe@john.com"
-            value={email}
-            onChange={emailInputHandler}
-          />
-          {renderEmailButton()}
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-        </div>
-        {sendingState === "SUCCESS" && (
-          <p className="success-messge">
-            Email sent successfully! Please check your spam folder if you can't
-            find it in your inbox yet
-          </p>
-        )}
 
         <p
           className="close"
           onClick={() => {
             dialogRef.current.close();
-            setSendingState(null);
-            setErrorMessage(null);
             setDialogOpen(false);
           }}
         >
@@ -181,38 +87,12 @@ export default function EditLinkModal({
           margin-top: 8px;
           width: 447px;
         }
-        .email {
-          width: 100%;
-          margin-top: 24px;
-        }
-        .email h2 {
-          font-size: 24px;
-        }
         p {
           font-size: 12px;
           width: 400px;
           padding: 16px;
           font-weight: bold;
           font-family: Menlo, monospace;
-        }
-        .email-input-container {
-          flex: auto;
-          display: flex;
-          align-items: center;
-        }
-        .email-input-container input {
-          color: black;
-          background: white;
-          height: 53px;
-          width: 286px;
-          font-weight: bold;
-          font-family: "Comic Sans", "Comic Sans MS", "Chalkboard",
-            "ChalkboardSE-Regular", monospace;
-          border: 1px solid black;
-          padding: 8px;
-          margin-right: 8px;
-          border-radius: 5px;
-          font-size: 24px;
         }
 
         .close {
@@ -231,9 +111,6 @@ export default function EditLinkModal({
           .edit-link p {
             width: 80%;
             margin: auto;
-          }
-          .email-input-container input {
-            width: 200px;
           }
         }
       `}</style>

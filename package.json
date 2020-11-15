@@ -4,15 +4,12 @@
     "build": "next build"
   },
   "dependencies": {
-    "@sentry/browser": "^5.6.3",
     "dialog-polyfill": "^0.5.0",
     "faunadb": "^2.8.0",
     "jwt-simple": "^0.5.6",
     "ms": "^2.1.2",
     "next": "^9.0.6-canary.1",
     "node-fetch": "^2.6.0",
-    "pusher": "^2.2.2",
-    "pusher-js": "^5.0.1",
     "react": "^16.9.0",
     "react-div-100vh": "^0.3.4",
     "react-dom": "^16.9.0",

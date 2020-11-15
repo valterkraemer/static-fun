@@ -3,9 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import EditLinkModal from "./edit-link-modal";
 import SaveBar from "./save-bar";
 
-export default function EditorContainer({ html, email, editLink }) {
+export default function EditorContainer({ html, editLink }) {
   const [_html, setHtml] = useState(html || "");
-  const [_email, setEmail] = useState(email);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -13,17 +12,10 @@ export default function EditorContainer({ html, email, editLink }) {
       <EditLinkModal
         dialogOpen={dialogOpen}
         setDialogOpen={setDialogOpen}
-        email={_email}
-        setEmail={setEmail}
         editLink={editLink}
       />
       <div className="editor-container">
-        <Editor
-          html={_html}
-          email={_email}
-          setHtml={setHtml}
-          setDialogOpen={setDialogOpen}
-        />
+        <Editor html={_html} setHtml={setHtml} setDialogOpen={setDialogOpen} />
       </div>
       <div className="output-container">
         <OutputContainer content={_html} />
@@ -70,8 +62,8 @@ export default function EditorContainer({ html, email, editLink }) {
   );
 }
 
-function Editor({ html, email, setHtml, setDialogOpen }) {
-  const [saveState, setSaveState] = useState();
+function Editor({ html, setHtml, setDialogOpen }) {
+  const [saveState, setSaveState] = useState<string>();
   const [showEditLink, setShowEditLink] = useState(false);
 
   function onChange(e) {

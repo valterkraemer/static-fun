@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import Button from "./button";
 import ms from "ms";
+import { getApp, getQueryParams } from "../lib/utils";
 
 export default function SaveBar({
   setDialogOpen,
@@ -11,15 +12,18 @@ export default function SaveBar({
   showEditLink,
   setShowEditLink
 }) {
-  const [lastSaved, setLastSaved] = useState();
-  const [currentTime, setCurrentTime] = useState();
+  const [lastSaved, setLastSaved] = useState<number>();
+  const [currentTime, setCurrentTime] = useState<number>();
   const [currentTimeInterval, setCurrentTimeInterval] = useState();
 
-  async function savePage() {
-    console.log("saving page");
+  async function saveApp() {
+    console.log("saving app");
     setSaveState("SAVING");
     try {
-      const res = await fetch("/api/save-page", {
+      const query = getQueryParams(window.location);
+      const app = getApp(window.location.host, query);
+
+      const res = await fetch(`/api/app?app=${app}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -46,7 +50,7 @@ export default function SaveBar({
       setCurrentTimeInterval(
         setInterval(() => {
           setCurrentTime(Date.now());
-        }, 10000)
+        }, 10000) as any
       );
     }
     return () => {
@@ -78,7 +82,7 @@ export default function SaveBar({
             width={80}
             height={36}
             fontSize={24}
-            onClick={savePage}
+            onClick={saveApp}
           >
             ❌
           </Button>
@@ -97,7 +101,7 @@ export default function SaveBar({
             height={36}
             bg="#FF0080"
             fontSize={14}
-            onClick={savePage}
+            onClick={saveApp}
           >
             SAVE
           </Button>

@@ -4,7 +4,7 @@ import Div100vh from "react-div-100vh";
 import EditorContainer from "../components/editor";
 import TopBar from "../components/top-bar";
 
-export function EditorLayout({ html, email, editLink }) {
+export function EditorLayout({ html, editLink }) {
   return (
     <Div100vh>
       <Head>
@@ -12,7 +12,7 @@ export function EditorLayout({ html, email, editLink }) {
         <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
       </Head>
       <TopBar info />
-      <EditorContainer html={html} email={email} editLink={editLink} />
+      <EditorContainer html={html} editLink={editLink} />
     </Div100vh>
   );
 }

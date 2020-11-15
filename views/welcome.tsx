@@ -5,26 +5,27 @@ import Div100vh from "react-div-100vh";
 import Button from "../components/button";
 import Input from "../components/input";
 import TopBar from "../components/top-bar";
+import { isDev } from "../lib/utils";
 
 export function Welcome() {
   const [pageToSearch, setPageToSearch] = useState("");
-  const [pageExists, setPageExists] = useState();
+  const [pageExists, setPageExists] = useState<any>();
   const [searchState, setSearchState] = useState("");
-  const [errorMessage, setErrorMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState<any>();
 
   async function checkIfPageExists(e) {
     e.preventDefault();
     if (pageToSearch) {
       setSearchState("SEARCHING");
       try {
-        let res = await fetch(`/api/get-page?page=${pageToSearch}`);
+        let res = await fetch(`/api/app?app=${pageToSearch}`);
         if (res.status === 200) {
           setSearchState("ERROR");
           setPageExists({ name: `${pageToSearch}.static.fun` });
           return;
         }
         if (res.status === 404) {
-          window.location.href = `https://${pageToSearch}.static.fun`;
+          goToApp(pageToSearch);
         } else {
           let { message, stack } = await res.json();
           throw new Error(message);
@@ -35,6 +36,14 @@ export function Welcome() {
         setSearchState("NETWORK_ERROR");
         return;
       }
+    }
+  }
+
+  function goToApp(app) {
+    if (isDev(window.location.host)) {
+      window.location.href = `http://localhost:3000/?app=${app}`;
+    } else {
+      window.location.href = `https://${app}.svelterepl.site`;
     }
   }
 
@@ -130,25 +139,6 @@ export function Welcome() {
           </p>
         )}
         <div className="emojis" />
-        <div className="powered-by">
-          Powered by{"  "}
-          <a href="https://nextjs.org" target="_blank">
-            Next.js
-          </a>
-          ,{" "}
-          <a href="https://fauna.com" target="_blank">
-            FaunaDB
-          </a>
-          ,{" "}
-          <a href="https://sendgrid.com" target="_blank">
-            Twilio Sendgrid
-          </a>
-          ,
-          <a href="https://pusher.com/channels" target="_blank">
-            Pusher Channels
-          </a>
-          , and hosted with <a href="https://vercel.com">Vercel</a>
-        </div>
       </div>
       <style jsx>{`
           .welcome-container {

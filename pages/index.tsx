@@ -2,20 +2,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import Spinner from "../components/spinner";
-import { defaultMarkup, getPageData } from "../lib/data";
+import { defaultMarkup, getAppData } from "../lib/data";
 import { EditorLayout } from "../views/editor";
 import { FixedCenterLayout } from "../views/fixed-center";
 import { RenderStaticLayout } from "../views/static-layout";
 import { Welcome } from "../views/welcome";
 
 export default function IndexPage() {
-  const [pageData, setPageData] = useState();
-  const [email, setEmail] = useState();
-  const [error, setError] = useState();
+  const [pageData, setPageData] = useState<any>();
+  const [error, setError] = useState<any>();
   const router = useRouter();
 
   useEffect(() => {
-    console.log("🦄 https://vercel.com/blog/wildcard-domains");
     let href = window.location.href;
 
     let linkToken = router.query.edit;
@@ -26,7 +24,7 @@ export default function IndexPage() {
     }
 
     if (!pageData) {
-      getPageData(href)
+      getAppData(href)
         .then(data => {
           if (!data) {
             setPageData(null);
@@ -48,16 +46,11 @@ export default function IndexPage() {
     return () => {};
   }, [pageData]);
 
-  useEffect(() => {
-    let storedEmail = localStorage.getItem("email");
-    if (storedEmail) setEmail(storedEmail);
-  }, []);
-
   if (error) {
     return (
       <FixedCenterLayout>
         <div>
-          {error.errorCode && <h1>HTTP Status: {pageData.errorCode}</h1>}
+          {error.errorCode && <h1>HTTP Status: {error.errorCode}</h1>}
           <h2>{error.message}</h2>
           <img src="https://media.giphy.com/media/953Nn3kYUbGxO/giphy.gif" />
           {error.stack && (
@@ -90,23 +83,11 @@ export default function IndexPage() {
   }
 
   if (pageData && pageData.html === null) {
-    return (
-      <EditorLayout
-        html={defaultMarkup}
-        email={email}
-        editLink={pageData.editLink}
-      />
-    );
+    return <EditorLayout html={defaultMarkup} editLink={pageData.editLink} />;
   }
 
   if (pageData && pageData.html && pageData.allowEdit) {
-    return (
-      <EditorLayout
-        html={pageData.html}
-        email={email}
-        editLink={pageData.editLink}
-      />
-    );
+    return <EditorLayout html={pageData.html} editLink={pageData.editLink} />;
   }
 
   if (pageData && pageData.html && !pageData.allowEdit) {
